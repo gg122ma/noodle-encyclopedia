@@ -1,0 +1,215 @@
+site_name: 面史纪元百科全书
+site_description: 平行宇宙Earth-面的权威百科全书——从1843年面工革命到2026年面食互联网时代
+site_author: 面史纪元百科全书编纂委员会
+site_url: https://noodle-epoch.fandom.wiki
+
+theme:
+  name: material
+  language: zh
+  palette:
+    - scheme: default
+      primary: blue grey
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: 切换至暗色模式
+    - scheme: slate
+      primary: blue grey
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: 切换至亮色模式
+  font:
+    text: Noto Sans SC
+    code: Fira Code
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.tabs
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.copy
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search:
+      lang: zh
+  - tags
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tilde
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/noodle-epoch
+  alternate:
+    - name: 中文
+      link: /
+      lang: zh
+  generator: false
+
+extra_css:
+  - assets/css/custom.css
+
+nav:
+  - 首页: index.md
+  - 卷一 · 编年史:
+      - history/index.md
+      - 1843年大发现: history/great-discovery-1843.md
+      - 面工革命: history/noodle-industrial-revolution.md
+      - 统一战争: history/unification-wars.md
+      - 调味包宣言: history/condiment-packet-manifesto.md
+      - 第一次辣味大战: history/first-spice-war.md
+      - 柏林风味墙: history/berlin-flavor-wall.md
+      - 油炸黄金时代: history/fried-golden-age.md
+      - 骨汤危机: history/broth-crisis-2003.md
+      - 面食互联网诞生: history/noodle-internet-birth.md
+      - 全球面食条约: history/global-noodle-treaty.md
+      - 太空面食计划: history/space-noodle-program.md
+      - 面食互联网时代: history/noodle-internet-era.md
+  - 卷二 · 地理与国家:
+      - geography/index.md
+      - 面团联邦: geography/noodle-dough-federation.md
+      - 高汤共和国: geography/broth-republic.md
+      - 油炸群岛: geography/fried-islands-commonwealth.md
+      - 辣条走廊: geography/spicy-strips-corridor.md
+      - 酱包公国: geography/sauce-duchy.md
+      - 干粉高原: geography/dry-powder-plateau.md
+      - 浓缩汤块城邦联盟: geography/concentrated-stock-city-states.md
+      - 深海骨汤城邦: geography/deep-sea-broth-city-states.md
+      - 极地冻干共和国: geography/polar-freeze-dried-republic.md
+      - 赤道热带酸辣带: geography/equatorial-sour-spice-belt.md
+      - 面饼平原: geography/noodle-cake-plains.md
+      - 调味包圣地: geography/condiment-packet-holy-land.md
+      - 速食海峡: geography/instant-strait.md
+      - 粉末沙漠: geography/powder-desert.md
+      - 面汤内海: geography/noodle-broth-inner-sea.md
+  - 卷三 · 人物传记:
+      - figures/index.md
+      - 田中铸物: figures/tanaka-imono.md
+      - 汤姆·高汤森: figures/tom-brothson.md
+      - 麻辣·卡斯特罗: figures/mala-castro.md
+      - 面条因斯坦: figures/noodle-einstein.md
+      - 调味包圣女贞德: figures/condiment-joan.md
+      - 酱油王乾隆: figures/soy-sauce-qianlong.md
+      - 汤料特斯拉: figures/soup-tesla.md
+      - 辣椒甘地: figures/chili-gandhi.md
+      - 高汤凯撒: figures/broth-caesar.md
+      - 面霸洛克菲勒: figures/noodle-tycoon-rockefeller.md
+      - 粉包居里: figures/powder-curie.md
+      - 油炸拿破仑: figures/fried-napoleon.md
+      - 干面禅师六祖慧能: figures/dry-noodle-huineng.md
+      - 调味工程师冯·布劳恩: figures/flavor-engineer-von-braun.md
+      - 辣妹子花木兰: figures/spicy-mulan.md
+      - 面条达芬奇: figures/noodle-da-vinci.md
+      - 速食教父安藤百福: figures/instant-patron-ando.md
+      - 高汤女皇叶卡捷琳娜: figures/broth-empress-catherine.md
+  - 卷四 · 科技与工程:
+      - technology/index.md
+      - 汤料燃料电池: technology/soup-fuel-cell.md
+      - 面饼复合材料: technology/noodle-cake-composite.md
+      - 3分钟定律: technology/three-minute-law.md
+      - N52级方便面: technology/n52-instant-noodle.md
+      - 调味包微封装: technology/condiment-microencapsulation.md
+      - 高汤浓缩技术: technology/broth-concentration-tech.md
+      - 面条量子纠缠: technology/noodle-quantum-entanglement.md
+      - 油炸纳米涂层: technology/fried-nano-coating.md
+      - 速食传送门: technology/instant-transmission-gate.md
+      - 面饼太阳能板: technology/noodle-cake-solar-panel.md
+      - 骨汤人工智能: technology/broth-artificial-intelligence.md
+      - 调味基因编辑: technology/flavor-gene-editing.md
+  - 卷五 · 宗教与信仰:
+      - religion/index.md
+      - 原汤教: religion/original-broth-faith.md
+      - 速食改革宗: religion/instant-reform-sect.md
+      - 深酱神学: religion/deep-sauce-theology.md
+      - 三分钟圣战: religion/three-minute-holy-war.md
+      - 调味包圣物崇拜: religion/condiment-relic-worship.md
+      - 干面苦修派: religion/dry-noodle-asceticism.md
+      - 汤料泛神论: religion/soup-pantheism.md
+      - 面食诺斯底主义: religion/noodle-gnosticism.md
+      - 辣味千禧年运动: religion/spice-millennialism.md
+      - 无味虚无主义: religion/flavorless-nihilism.md
+  - 卷六 · 军事与战争:
+      - military/index.md
+      - 辣味大战: military/great-spice-war.md
+      - 高汤弹: military/broth-bomb.md
+      - 面饼装甲: military/noodle-cake-armor.md
+      - 调味包化学武器: military/condiment-chemical-weapons.md
+      - 速食突袭战术: military/instant-blitz-tactics.md
+      - 骨汤海军: military/broth-navy.md
+      - 面条导弹系统: military/noodle-missile-system.md
+      - 油炸空降师: military/fried-airborne-division.md
+      - 终极方便面威慑: military/ultimate-instant-deterrence.md
+  - 卷七 · 经济与贸易:
+      - economy/index.md
+      - 酱包本位制: economy/sauce-packet-standard.md
+      - 全球方便面指数: economy/global-noodle-index.md
+      - 面霸集团: economy/noodle-tycoon-corporation.md
+      - 汤料期货市场: economy/broth-futures-market.md
+      - 调味包关税同盟: economy/condiment-tariff-union.md
+      - 面食丝绸之路: economy/noodle-silk-road.md
+      - 速食通货膨胀: economy/instant-inflation.md
+      - 高汤央行: economy/broth-central-bank.md
+  - 卷八 · 文化与艺术:
+      - culture/index.md
+      - 泡面文学运动: culture/instant-noodle-literary-movement.md
+      - 筷子交响曲: culture/chopstick-symphony.md
+      - 面雕艺术: culture/noodle-sculpture-art.md
+      - 高汤水墨画: culture/broth-ink-painting.md
+      - 速食电影新浪潮: culture/instant-cinema-new-wave.md
+      - 面食奥运会: culture/noodle-olympics.md
+      - 调味包诗歌: culture/condiment-poetry.md
+      - 三分钟摇滚: culture/three-minute-rock.md
+      - 面食建筑主义: culture/noodle-architectural-movement.md
+      - 速食时尚: culture/instant-fashion.md
+  - 卷九 · 科学与学术:
+      - science/index.md
+      - 面条拓扑学: science/noodle-topology.md
+      - 汤料化学: science/soup-chemistry.md
+      - 膨化物理学: science/puffing-physics.md
+      - 调味量子力学: science/condiment-quantum-mechanics.md
+      - 面饼地质学: science/noodle-cake-geology.md
+      - 高汤流体力学: science/broth-fluid-dynamics.md
+      - 速食心理学: science/instant-psychology.md
+      - 面食天文学: science/noodle-astronomy.md
+  - 卷十 · 社会与日常:
+      - society/index.md
+      - 三分钟等待仪式: society/three-minute-waiting-ritual.md
+      - 面食等级制度: society/noodle-hierarchy.md
+      - 速食教育体系: society/instant-education.md
+      - 面食婚丧嫁娶: society/noodle-life-ceremonies.md
+      - 调味包黑市: society/condiment-black-market.md
+      - 面食方言: society/noodle-dialects.md
+      - 面食节庆: society/noodle-festivals.md
+      - 退休面礼: society/retirement-noodle-gift.md
