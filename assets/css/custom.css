@@ -1,0 +1,224 @@
+/* 面史纪元百科全书 - 维基百科风格定制 */
+
+:root {
+    --md-primary-fg-color: #202122;
+    --md-primary-fg-color--light: #54595d;
+    --md-primary-fg-color--dark: #000000;
+    --md-accent-fg-color: #FF8F00;
+    --md-accent-fg-color--transparent: rgba(255, 143, 0, 0.1);
+    --md-typeset-a-color: #E65100;
+    --md-typeset-a-color--visited: #BF360C;
+}
+
+/* 维基风格信息框 */
+.infobox {
+    float: right;
+    clear: right;
+    margin: 0 0 1em 1.4em;
+    width: 22em;
+    background-color: #f8f9fa;
+    border: 1px solid #a2a9b1;
+    border-spacing: 0.35em;
+    padding: 0.2em;
+    font-size: 88%;
+    line-height: 1.5em;
+}
+
+.infobox-title {
+    background-color: #FF8F00;
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 0.4em;
+    color: white;
+}
+
+.infobox-image {
+    text-align: center;
+    padding: 0.5em;
+    background-color: #eaecf0;
+}
+
+.infobox-data {
+    padding: 0.2em 0.4em;
+    border-top: 1px solid #e0e0e0;
+}
+
+.infobox-label {
+    font-weight: bold;
+    color: #54595d;
+    width: 35%;
+    vertical-align: top;
+}
+
+/* 维基风格引用块 */
+.reference {
+    font-size: 0.75em;
+    vertical-align: super;
+    color: var(--md-accent-fg-color);
+    cursor: pointer;
+}
+
+.reference:hover {
+    text-decoration: underline;
+}
+
+/* 章节标题装饰 */
+h2 {
+    border-bottom: 2px solid #FF8F00;
+    padding-bottom: 0.25em;
+}
+
+/* 参见条目 */
+.see-also {
+    background-color: #FFF3E0;
+    border-left: 4px solid #FF8F00;
+    padding: 0.5em 1em;
+    margin: 1em 0;
+}
+
+/* 虚构引用列表 */
+.references-list {
+    font-size: 0.85em;
+    border-top: 1px solid #a2a9b1;
+    padding-top: 1em;
+    margin-top: 2em;
+}
+
+.references-list li {
+    margin-bottom: 0.5em;
+    line-height: 1.4;
+}
+
+/* 分类标签 */
+.category-tag {
+    display: inline-block;
+    background-color: var(--md-accent-fg-color--transparent);
+    color: #E65100;
+    padding: 0.1em 0.5em;
+    border-radius: 3px;
+    font-size: 0.8em;
+    margin: 0.2em;
+    font-weight: 500;
+}
+
+/* 时间线样式 */
+.timeline-entry {
+    border-left: 3px solid #FF8F00;
+    padding-left: 1em;
+    margin-bottom: 1.5em;
+    position: relative;
+}
+
+.timeline-entry::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #FF8F00;
+    border-radius: 50%;
+    position: absolute;
+    left: -6.5px;
+    top: 0.3em;
+}
+
+.timeline-year {
+    font-weight: bold;
+    color: #E65100;
+    font-size: 1.1em;
+}
+
+/* 国家信息卡 */
+.nation-card {
+    display: inline-block;
+    width: 48%;
+    vertical-align: top;
+    margin: 1%;
+    background: #f8f9fa;
+    border: 1px solid #a2a9b1;
+    padding: 1em;
+    border-radius: 2px;
+}
+
+/* 脚注样式 */
+.footnote-sep {
+    border-top: 1px solid #a2a9b1;
+    margin-top: 2em;
+    padding-top: 1em;
+}
+
+/* Admonition 面条风格覆盖 */
+.md-typeset .admonition,
+.md-typeset details {
+    border: 1px solid #FFB74D;
+}
+
+.md-typeset .admonition-title,
+.md-typeset summary {
+    background-color: #FFF3E0;
+}
+
+/* SVG图片样式 */
+.md-typeset img[src$=".svg"] {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1em auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background: white;
+    padding: 0.5em;
+}
+
+/* Mermaid图表样式 */
+.mermaid {
+    text-align: center;
+    margin: 1.5em 0;
+}
+
+/* 表格样式增强 */
+.md-typeset table {
+    border: 1px solid #e0e0e0;
+}
+
+.md-typeset table thead {
+    background-color: #FF8F00;
+    color: white;
+}
+
+.md-typeset table thead th {
+    border-color: #E65100;
+    color: white;
+    font-weight: bold;
+}
+
+/* 首页卡片样式 */
+.home-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1em;
+    margin: 1em 0;
+}
+
+/* 响应式 */
+@media (max-width: 76.1875em) {
+    .infobox {
+        float: none;
+        width: 100%;
+        margin: 1em 0;
+    }
+
+    .nation-card {
+        width: 100%;
+        display: block;
+    }
+}
+
+/* 打印样式 */
+@media print {
+    .md-sidebar,
+    .md-header,
+    .md-footer,
+    .md-content__button {
+        display: none !important;
+    }
+}

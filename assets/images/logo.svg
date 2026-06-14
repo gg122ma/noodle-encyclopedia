@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bowl" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF8F00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E65100;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Bowl -->
+  <ellipse cx="50" cy="60" rx="38" ry="8" fill="#E65100" opacity="0.3"/>
+  <path d="M12 45 Q12 75 50 75 Q88 75 88 45 Z" fill="url(#bowl)" stroke="#BF360C" stroke-width="2"/>
+  <!-- Steam -->
+  <path d="M35 30 Q38 20 35 10" fill="none" stroke="#FFB74D" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+  <path d="M50 28 Q53 18 50 8" fill="none" stroke="#FFB74D" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+  <path d="M65 30 Q68 20 65 10" fill="none" stroke="#FFB74D" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+  <!-- Noodles -->
+  <path d="M30 48 Q35 38 40 48 Q45 58 50 48" fill="none" stroke="#FFF9C4" stroke-width="3" stroke-linecap="round"/>
+  <path d="M45 48 Q50 38 55 48 Q60 58 65 48" fill="none" stroke="#FFF9C4" stroke-width="3" stroke-linecap="round"/>
+  <path d="M55 50 Q60 40 65 50 Q70 60 75 50" fill="none" stroke="#FFF9C4" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Chopsticks -->
+  <line x1="60" y1="25" x2="78" y2="55" stroke="#8D6E63" stroke-width="3" stroke-linecap="round"/>
+  <line x1="65" y1="23" x2="80" y2="50" stroke="#8D6E63" stroke-width="3" stroke-linecap="round"/>
+  <!-- Condiment packet -->
+  <rect x="70" y="58" width="15" height="10" rx="2" fill="#F44336" stroke="#B71C1C" stroke-width="1"/>
+  <text x="77.5" y="66" text-anchor="middle" font-size="5" fill="white" font-weight="bold">辣</text>
+</svg>

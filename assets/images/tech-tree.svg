@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 450" font-family="Noto Sans SC, sans-serif">
+  <rect width="700" height="450" fill="#FAFAFA"/>
+  <text x="350" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">面条文明科技树</text>
+
+  <!-- Level 0: Discovery -->
+  <rect x="270" y="40" width="160" height="35" rx="8" fill="#FF8F00" stroke="#E65100" stroke-width="2"/>
+  <text x="350" y="62" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">1843年大发现</text>
+
+  <!-- Arrows from discovery -->
+  <line x1="310" y1="75" x2="150" y2="110" stroke="#999" stroke-width="1.5"/>
+  <line x1="350" y1="75" x2="350" y2="110" stroke="#999" stroke-width="1.5"/>
+  <line x1="390" y1="75" x2="550" y2="110" stroke="#999" stroke-width="1.5"/>
+
+  <!-- Level 1: Core Technologies -->
+  <rect x="70" y="110" width="160" height="35" rx="8" fill="#1565C0" stroke="#0D47A1" stroke-width="2"/>
+  <text x="150" y="132" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">面工革命 (1846)</text>
+
+  <rect x="270" y="110" width="160" height="35" rx="8" fill="#2E7D32" stroke="#1B5E20" stroke-width="2"/>
+  <text x="350" y="132" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">3分钟定律 (1843)</text>
+
+  <rect x="470" y="110" width="160" height="35" rx="8" fill="#7B1FA2" stroke="#4A148C" stroke-width="2"/>
+  <text x="550" y="132" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">面条达芬奇 (1848)</text>
+
+  <!-- Level 2: Branches -->
+  <line x1="150" y1="145" x2="100" y2="185" stroke="#999" stroke-width="1.5"/>
+  <line x1="150" y1="145" x2="200" y2="185" stroke="#999" stroke-width="1.5"/>
+  <line x1="350" y1="145" x2="350" y2="185" stroke="#999" stroke-width="1.5"/>
+  <line x1="550" y1="145" x2="500" y2="185" stroke="#999" stroke-width="1.5"/>
+  <line x1="550" y1="145" x2="600" y2="185" stroke="#999" stroke-width="1.5"/>
+
+  <rect x="20" y="185" width="160" height="35" rx="8" fill="#00695C" stroke="#004D40" stroke-width="2"/>
+  <text x="100" y="207" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">汤料锅炉 (1851)</text>
+
+  <rect x="270" y="185" width="160" height="35" rx="8" fill="#F57F17" stroke="#E65100" stroke-width="2"/>
+  <text x="350" y="207" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">面条引擎 (1848)</text>
+
+  <rect x="420" y="185" width="160" height="35" rx="8" fill="#AD1457" stroke="#880E4F" stroke-width="2"/>
+  <text x="500" y="207" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">面饼复合材料</text>
+
+  <rect x="530" y="185" width="140" height="35" rx="8" fill="#4527A0" stroke="#311B92" stroke-width="2"/>
+  <text x="600" y="207" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">调味包电池</text>
+
+  <!-- Level 3: Advanced -->
+  <line x1="100" y1="220" x2="100" y2="265" stroke="#999" stroke-width="1.5"/>
+  <line x1="350" y1="220" x2="250" y2="265" stroke="#999" stroke-width="1.5"/>
+  <line x1="350" y1="220" x2="450" y2="265" stroke="#999" stroke-width="1.5"/>
+
+  <rect x="20" y="265" width="160" height="35" rx="8" fill="#00838F" stroke="#006064" stroke-width="2"/>
+  <text x="100" y="287" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">汤料燃料电池</text>
+
+  <rect x="180" y="265" width="140" height="35" rx="8" fill="#283593" stroke="#1A237E" stroke-width="2"/>
+  <text x="250" y="287" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">高汤浓缩技术</text>
+
+  <rect x="380" y="265" width="140" height="35" rx="8" fill="#BF360C" stroke="#8C2700" stroke-width="2"/>
+  <text x="450" y="287" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">油炸纳米涂层</text>
+
+  <!-- Level 4: Modern -->
+  <line x1="100" y1="300" x2="250" y2="345" stroke="#999" stroke-width="1.5"/>
+  <line x1="250" y1="300" x2="250" y2="345" stroke="#999" stroke-width="1.5"/>
+  <line x1="450" y1="300" x2="450" y2="345" stroke="#999" stroke-width="1.5"/>
+
+  <rect x="170" y="345" width="160" height="35" rx="8" fill="#1565C0" stroke="#0D47A1" stroke-width="2"/>
+  <text x="250" y="367" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">面条量子纠缠 (2005)</text>
+
+  <rect x="370" y="345" width="160" height="35" rx="8" fill="#E65100" stroke="#BF360C" stroke-width="2"/>
+  <text x="450" y="367" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">N52级方便面</text>
+
+  <!-- Level 5: Future -->
+  <line x1="250" y1="380" x2="250" y2="410" stroke="#999" stroke-width="1.5"/>
+
+  <rect x="100" y="410" width="140" height="35" rx="8" fill="#0D47A1" stroke="#0A1929" stroke-width="2"/>
+  <text x="170" y="432" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">骨汤AI (2023)</text>
+
+  <rect x="260" y="410" width="160" height="35" rx="8" fill="#1B5E20" stroke="#0A2E0A" stroke-width="2"/>
+  <text x="340" y="432" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">面食互联网 (2011)</text>
+
+  <rect x="440" y="410" width="160" height="35" rx="8" fill="#4A148C" stroke="#2A0845" stroke-width="2"/>
+  <text x="520" y="432" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">速食传送门 (理论)</text>
+</svg>

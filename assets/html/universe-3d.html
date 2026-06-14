@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>面史纪元 · 知识图谱</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  overflow: hidden;
+  background: #1e1e1e;
+  font-family: -apple-system, 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+canvas { display: block; }
+
+/* Obsidian-style top bar */
+#topbar {
+  position: absolute; top: 0; left: 0; right: 0; height: 36px;
+  background: #252525; border-bottom: 1px solid #333;
+  display: flex; align-items: center; padding: 0 12px;
+  z-index: 20; gap: 12px;
+}
+#topbar .tab {
+  font-size: 12px; color: #999; padding: 6px 12px;
+  border-bottom: 2px solid transparent; cursor: pointer;
+  transition: all 0.15s;
+}
+#topbar .tab:hover { color: #ccc; }
+#topbar .tab.active { color: #e0e0e0; border-bottom-color: #7f6df2; }
+
+/* Obsidian-style graph controls */
+#controls {
+  position: absolute; top: 48px; right: 12px;
+  display: flex; flex-direction: column; gap: 4px;
+  z-index: 20;
+}
+#controls button {
+  width: 28px; height: 28px; border: none; border-radius: 4px;
+  background: #2d2d2d; color: #aaa; font-size: 16px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+#controls button:hover { background: #3a3a3a; color: #fff; }
+
+/* Search bar - Obsidian style */
+#search {
+  position: absolute; top: 48px; left: 12px;
+  z-index: 20;
+}
+#search input {
+  width: 200px; height: 28px; border: 1px solid #444;
+  border-radius: 4px; background: #2d2d2d; color: #ddd;
+  padding: 0 8px; font-size: 12px; outline: none;
+}
+#search input:focus { border-color: #7f6df2; }
+#search input::placeholder { color: #666; }
+
+/* Tooltip */
+#tooltip {
+  position: absolute; display: none; pointer-events: none;
+  background: #2d2d2d; color: #ddd;
+  padding: 8px 12px; border-radius: 6px; font-size: 12px;
+  border: 1px solid #444; z-index: 30;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  max-width: 240px;
+}
+#tooltip .tt-title { font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+#tooltip .tt-meta { color: #888; font-size: 11px; }
+
+/* Info */
+#info {
+  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  font-size: 11px; color: #555; z-index: 20;
+  display: flex; gap: 16px;
+}
+#info span { display: flex; align-items: center; gap: 4px; }
+#info .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="tab active">图谱</div>
+  <div class="tab">本地</div>
+</div>
+
+<div id="search">
+  <input type="text" placeholder="搜索节点..." id="searchInput">
+</div>
+
+<div id="controls">
+  <button id="zoomIn" title="放大">+</button>
+  <button id="zoomOut" title="缩小">−</button>
+  <button id="resetView" title="重置视图">⟲</button>
+</div>
+
+<div id="tooltip"></div>
+
+<canvas id="canvas"></canvas>
+
+<div id="info">
+  <span><span class="dot" style="background:#FF8F00"></span>历史</span>
+  <span><span class="dot" style="background:#42A5F5"></span>地理</span>
+  <span><span class="dot" style="background:#66BB6A"></span>人物</span>
+  <span><span class="dot" style="background:#AB47BC"></span>科技</span>
+  <span><span class="dot" style="background:#EF5350"></span>宗教</span>
+  <span><span class="dot" style="background:#78909C"></span>军事</span>
+  <span><span class="dot" style="background:#26A69A"></span>经济</span>
+  <span><span class="dot" style="background:#EC407A"></span>文化</span>
+  <span><span class="dot" style="background:#5C6BC0"></span>科学</span>
+  <span><span class="dot" style="background:#FFA726"></span>社会</span>
+</div>
+
+<script>
+// ==================== DATA ====================
+const VOLUMES = [
+  { name: '编年史',       entries: 13, color: '#FF8F00', url: 'history/',    tags: ['历史','时间线'] },
+  { name: '地理与国家',   entries: 16, color: '#42A5F5', url: 'geography/',  tags: ['地理','国家'] },
+  { name: '人物传记',     entries: 19, color: '#66BB6A', url: 'figures/',    tags: ['人物','传记'] },
+  { name: '科技与工程',   entries: 13, color: '#AB47BC', url: 'technology/', tags: ['科技','工程'] },
+  { name: '宗教与信仰',   entries: 11, color: '#EF5350', url: 'religion/',   tags: ['宗教','信仰'] },
+  { name: '军事与战争',   entries: 10, color: '#78909C', url: 'military/',   tags: ['军事','战争'] },
+  { name: '经济与贸易',   entries: 9,  color: '#26A69A', url: 'economy/',    tags: ['经济','贸易'] },
+  { name: '文化与艺术',   entries: 11, color: '#EC407A', url: 'culture/',    tags: ['文化','艺术'] },
+  { name: '科学与学术',   entries: 9,  color: '#5C6BC0', url: 'science/',    tags: ['科学','学术'] },
+  { name: '社会与日常',   entries: 9,  color: '#FFA726', url: 'society/',    tags: ['社会','日常'] },
+];
+
+// Sub-nodes: key entries per volume
+const SUB_NODES = [
+  // History
+  { name: '1843年大发现',     vol: 0, color: '#FF8F00', size: 5 },
+  { name: '面工革命',         vol: 0, color: '#FF8F00', size: 5 },
+  { name: '统一战争',         vol: 0, color: '#FF8F00', size: 4 },
+  { name: '调味包宣言',       vol: 0, color: '#FF8F00', size: 4 },
+  { name: '辣味大战',         vol: 0, color: '#FF8F00', size: 4 },
+  { name: '柏林风味墙',       vol: 0, color: '#FF8F00', size: 4 },
+  { name: '骨汤危机',         vol: 0, color: '#FF8F00', size: 4 },
+  { name: '面食互联网',       vol: 0, color: '#FF8F00', size: 5 },
+  // Geography
+  { name: '面团联邦',         vol: 1, color: '#42A5F5', size: 5 },
+  { name: '高汤共和国',       vol: 1, color: '#42A5F5', size: 5 },
+  { name: '油炸群岛',         vol: 1, color: '#42A5F5', size: 4 },
+  { name: '辣条走廊',         vol: 1, color: '#42A5F5', size: 4 },
+  { name: '酱包公国',         vol: 1, color: '#42A5F5', size: 4 },
+  { name: '深海骨汤城邦',     vol: 1, color: '#42A5F5', size: 3 },
+  { name: '调味包圣地',       vol: 1, color: '#42A5F5', size: 4 },
+  // Figures
+  { name: '田中铸物',         vol: 2, color: '#66BB6A', size: 6 },
+  { name: '面条因斯坦',       vol: 2, color: '#66BB6A', size: 6 },
+  { name: '麻辣·卡斯特罗',   vol: 2, color: '#66BB6A', size: 5 },
+  { name: '高汤凯撒',         vol: 2, color: '#66BB6A', size: 5 },
+  { name: '面霸洛克菲勒',     vol: 2, color: '#66BB6A', size: 4 },
+  { name: '粉包居里',         vol: 2, color: '#66BB6A', size: 4 },
+  { name: '辣椒甘地',         vol: 2, color: '#66BB6A', size: 5 },
+  // Technology
+  { name: '3分钟定律',        vol: 3, color: '#AB47BC', size: 5 },
+  { name: '面条量子纠缠',     vol: 3, color: '#AB47BC', size: 5 },
+  { name: '汤料燃料电池',     vol: 3, color: '#AB47BC', size: 4 },
+  { name: 'N52级方便面',      vol: 3, color: '#AB47BC', size: 4 },
+  { name: '骨汤AI',           vol: 3, color: '#AB47BC', size: 5 },
+  // Religion
+  { name: '原汤教',           vol: 4, color: '#EF5350', size: 5 },
+  { name: '速食改革宗',       vol: 4, color: '#EF5350', size: 5 },
+  { name: '深酱神学',         vol: 4, color: '#EF5350', size: 4 },
+  { name: '三分钟圣战',       vol: 4, color: '#EF5350', size: 3 },
+  // Military
+  { name: '高汤弹',           vol: 5, color: '#78909C', size: 4 },
+  { name: '面饼装甲',         vol: 5, color: '#78909C', size: 4 },
+  { name: '终极方便面威慑',   vol: 5, color: '#78909C', size: 5 },
+  // Economy
+  { name: '酱包本位制',       vol: 6, color: '#26A69A', size: 5 },
+  { name: '面霸集团',         vol: 6, color: '#26A69A', size: 4 },
+  { name: '高汤央行',         vol: 6, color: '#26A69A', size: 5 },
+  // Culture
+  { name: '泡面文学',         vol: 7, color: '#EC407A', size: 4 },
+  { name: '三分钟摇滚',       vol: 7, color: '#EC407A', size: 4 },
+  { name: '面食奥运会',       vol: 7, color: '#EC407A', size: 4 },
+  // Science
+  { name: '面条拓扑学',       vol: 8, color: '#5C6BC0', size: 5 },
+  { name: '调味量子力学',     vol: 8, color: '#5C6BC0', size: 4 },
+  { name: '面食天文学',       vol: 8, color: '#5C6BC0', size: 4 },
+  // Society
+  { name: '三分钟等待仪式',   vol: 9, color: '#FFA726', size: 5 },
+  { name: '面食等级制度',     vol: 9, color: '#FFA726', size: 4 },
+  { name: '调味包黑市',       vol: 9, color: '#FFA726', size: 4 },
+];
+
+// Cross-references between sub-nodes (by name)
+const SUB_EDGES = [
+  ['1843年大发现', '田中铸物'],
+  ['1843年大发现', '面工革命'],
+  ['1843年大发现', '3分钟定律'],
+  ['面工革命', '面条达芬奇'],
+  ['面工革命', '面团联邦'],
+  ['统一战争', '高汤凯撒'],
+  ['统一战争', '面饼装甲'],
+  ['统一战争', '高汤弹'],
+  ['调味包宣言', '麻辣·卡斯特罗'],
+  ['调味包宣言', '速食改革宗'],
+  ['辣味大战', '辣椒甘地'],
+  ['辣味大战', '辣条走廊'],
+  ['柏林风味墙', '原汤教'],
+  ['柏林风味墙', '速食改革宗'],
+  ['骨汤危机', '高汤央行'],
+  ['骨汤危机', '深海骨汤城邦'],
+  ['面食互联网', '面条量子纠缠'],
+  ['面食互联网', '骨汤AI'],
+  ['面条因斯坦', '面条量子纠缠'],
+  ['面条因斯坦', '面条拓扑学'],
+  ['面条因斯坦', '面团联邦'],
+  ['田中铸物', '面团联邦'],
+  ['高汤凯撒', '高汤共和国'],
+  ['高汤凯撒', '高汤弹'],
+  ['麻辣·卡斯特罗', '辣条走廊'],
+  ['麻辣·卡斯特罗', '速食改革宗'],
+  ['面霸洛克菲勒', '面霸集团'],
+  ['面霸洛克菲勒', '酱包本位制'],
+  ['粉包居里', '调味量子力学'],
+  ['辣椒甘地', '辣条走廊'],
+  ['辣椒甘地', '深酱神学'],
+  ['酱包本位制', '酱包公国'],
+  ['酱包本位制', '高汤央行'],
+  ['面团联邦', '面饼平原'],
+  ['高汤共和国', '面汤内海'],
+  ['面食奥运会', '面食等级制度'],
+  ['3分钟定律', '三分钟等待仪式'],
+  ['3分钟定律', '三分钟摇滚'],
+  ['三分钟等待仪式', '三分钟圣战'],
+  ['终极方便面威慑', '面饼装甲'],
+  ['面条拓扑学', '面食天文学'],
+  ['深酱神学', '辣条走廊'],
+  ['骨汤AI', '面食互联网'],
+];
+
+// Volume-level edges
+const VOL_EDGES = [
+  [0,1],[0,2],[0,3],[0,5],[0,9],
+  [1,6],[1,9],[2,3],[2,4],[2,7],
+  [3,4],[3,5],[3,8],[4,7],[4,9],
+  [5,6],[5,7],[6,7],[6,9],[7,8],[7,9],[8,9]
+];
+
+// ==================== CANVAS SETUP ====================
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() {
+  W = canvas.width = innerWidth;
+  H = canvas.height = innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ==================== GRAPH NODES ====================
+const allNodes = [];
+const allEdges = [];
+
+// Volume nodes (large)
+VOLUMES.forEach((v, i) => {
+  const angle = i * Math.PI * 2 / VOLUMES.length;
+  const r = Math.min(W, H) * 0.25;
+  allNodes.push({
+    id: v.name, label: v.name,
+    x: W/2 + Math.cos(angle) * r + (Math.random()-0.5)*60,
+    y: H/2 + Math.sin(angle) * r + (Math.random()-0.5)*60,
+    vx: 0, vy: 0,
+    radius: 8 + v.entries * 0.4,
+    color: v.color, vol: i, isVol: true,
+    url: v.url, entries: v.entries,
+    pinned: false, hovered: false, highlighted: false,
+  });
+});
+
+// Sub-nodes
+SUB_NODES.forEach(s => {
+  const parent = allNodes[s.vol];
+  allNodes.push({
+    id: s.name, label: s.name,
+    x: parent.x + (Math.random()-0.5) * 120,
+    y: parent.y + (Math.random()-0.5) * 120,
+    vx: 0, vy: 0,
+    radius: s.size,
+    color: s.color, vol: s.vol, isVol: false,
+    entries: 0,
+    pinned: false, hovered: false, highlighted: false,
+  });
+});
+
+// Build node map
+const nodeMap = {};
+allNodes.forEach(n => { nodeMap[n.id] = n; });
+
+// Volume edges
+VOL_EDGES.forEach(([a, b]) => {
+  allEdges.push({ source: allNodes[a], target: allNodes[b], isVol: true });
+});
+
+// Sub edges
+SUB_EDGES.forEach(([a, b]) => {
+  if (nodeMap[a] && nodeMap[b]) {
+    allEdges.push({ source: nodeMap[a], target: nodeMap[b], isVol: false });
+  }
+});
+
+// ==================== FORCE SIMULATION ====================
+function simulate() {
+  const alpha = 0.3;
+
+  // Repulsion (all pairs)
+  for (let i = 0; i < allNodes.length; i++) {
+    for (let j = i + 1; j < allNodes.length; j++) {
+      const a = allNodes[i], b = allNodes[j];
+      let dx = b.x - a.x, dy = b.y - a.y;
+      let dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      const minDist = (a.radius + b.radius) * 3;
+      if (dist < minDist * 4) {
+        const force = (minDist * 2) / (dist * dist) * alpha;
+        const fx = dx / dist * force;
+        const fy = dy / dist * force;
+        if (!a.pinned) { a.vx -= fx; a.vy -= fy; }
+        if (!b.pinned) { b.vx += fx; b.vy += fy; }
+      }
+    }
+  }
+
+  // Attraction (edges)
+  allEdges.forEach(e => {
+    const dx = e.target.x - e.source.x;
+    const dy = e.target.y - e.source.y;
+    const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+    const ideal = e.isVol ? 180 : 80;
+    const force = (dist - ideal) * 0.005 * alpha;
+    const fx = dx / dist * force;
+    const fy = dy / dist * force;
+    if (!e.source.pinned) { e.source.vx += fx; e.source.vy += fy; }
+    if (!e.target.pinned) { e.target.vx -= fx; e.target.vy -= fy; }
+  });
+
+  // Center gravity
+  allNodes.forEach(n => {
+    if (!n.pinned) {
+      n.vx += (W/2 - n.x) * 0.0003;
+      n.vy += (H/2 - n.y) * 0.0003;
+    }
+  });
+
+  // Same-vol attraction
+  allNodes.forEach(n => {
+    if (!n.isVol && !n.pinned) {
+      const parent = allNodes[n.vol];
+      const dx = parent.x - n.x, dy = parent.y - n.y;
+      const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      const force = (dist - 100) * 0.002 * alpha;
+      n.vx += dx / dist * force;
+      n.vy += dy / dist * force;
+    }
+  });
+
+  // Apply velocity with damping
+  allNodes.forEach(n => {
+    if (!n.pinned) {
+      n.vx *= 0.85;
+      n.vy *= 0.85;
+      n.x += n.vx;
+      n.y += n.vy;
+      // Bounds
+      n.x = Math.max(30, Math.min(W - 30, n.x));
+      n.y = Math.max(50, Math.min(H - 30, n.y));
+    }
+  });
+}
+
+// ==================== CAMERA / PAN / ZOOM ====================
+let cam = { x: 0, y: 0, zoom: 1 };
+
+function worldToScreen(wx, wy) {
+  return {
+    x: (wx - cam.x) * cam.zoom + W/2,
+    y: (wy - cam.y) * cam.zoom + H/2,
+  };
+}
+function screenToWorld(sx, sy) {
+  return {
+    x: (sx - W/2) / cam.zoom + cam.x,
+    y: (sy - H/2) / cam.zoom + cam.y,
+  };
+}
+
+// ==================== INTERACTION ====================
+let dragNode = null, isPanning = false, panStart = {x:0,y:0}, camStart = {x:0,y:0};
+let hoveredNode = null, searchHighlight = '';
+
+canvas.addEventListener('mousedown', e => {
+  const pos = screenToWorld(e.clientX, e.clientY);
+  // Check node hit
+  for (let i = allNodes.length - 1; i >= 0; i--) {
+    const n = allNodes[i];
+    const dx = pos.x - n.x, dy = pos.y - n.y;
+    if (dx*dx + dy*dy < (n.radius + 4) * (n.radius + 4) / (cam.zoom * cam.zoom)) {
+      dragNode = n;
+      n.pinned = true;
+      return;
+    }
+  }
+  isPanning = true;
+  panStart = { x: e.clientX, y: e.clientY };
+  camStart = { x: cam.x, y: cam.y };
+});
+
+canvas.addEventListener('mousemove', e => {
+  if (dragNode) {
+    const pos = screenToWorld(e.clientX, e.clientY);
+    dragNode.x = pos.x;
+    dragNode.y = pos.y;
+    dragNode.vx = 0; dragNode.vy = 0;
+    return;
+  }
+  if (isPanning) {
+    cam.x = camStart.x - (e.clientX - panStart.x) / cam.zoom;
+    cam.y = camStart.y - (e.clientY - panStart.y) / cam.zoom;
+    return;
+  }
+  // Hover detection
+  const pos = screenToWorld(e.clientX, e.clientY);
+  let found = null;
+  for (let i = allNodes.length - 1; i >= 0; i--) {
+    const n = allNodes[i];
+    const dx = pos.x - n.x, dy = pos.y - n.y;
+    if (dx*dx + dy*dy < (n.radius + 4) * (n.radius + 4) / (cam.zoom * cam.zoom)) {
+      found = n; break;
+    }
+  }
+  if (found !== hoveredNode) {
+    if (hoveredNode) hoveredNode.hovered = false;
+    hoveredNode = found;
+    if (found) found.hovered = true;
+  }
+  // Tooltip
+  const tooltip = document.getElementById('tooltip');
+  if (found) {
+    tooltip.style.display = 'block';
+    tooltip.style.left = Math.min(e.clientX + 14, W - 260) + 'px';
+    tooltip.style.top = (e.clientY - 10) + 'px';
+    tooltip.innerHTML = '<div class="tt-title" style="color:' + found.color + '">' + found.label + '</div>' +
+      (found.isVol ? '<div class="tt-meta">' + found.entries + ' 个条目 · 点击进入</div>' :
+       '<div class="tt-meta">卷' + (found.vol+1) + ' · ' + VOLUMES[found.vol].name + '</div>');
+    canvas.style.cursor = 'pointer';
+  } else {
+    tooltip.style.display = 'none';
+    canvas.style.cursor = isPanning ? 'grabbing' : 'grab';
+  }
+});
+
+canvas.addEventListener('mouseup', e => {
+  if (dragNode) {
+    // Click detection (small movement = click)
+    dragNode.pinned = false;
+    dragNode = null;
+    return;
+  }
+  isPanning = false;
+});
+
+canvas.addEventListener('click', e => {
+  if (dragNode) return;
+  const pos = screenToWorld(e.clientX, e.clientY);
+  for (let i = allNodes.length - 1; i >= 0; i--) {
+    const n = allNodes[i];
+    const dx = pos.x - n.x, dy = pos.y - n.y;
+    if (dx*dx + dy*dy < (n.radius + 4) * (n.radius + 4) / (cam.zoom * cam.zoom)) {
+      if (n.isVol && n.url) {
+        window.location.href = n.url;
+      } else {
+        // Highlight this node's cluster
+        highlightCluster(n);
+      }
+      return;
+    }
+  }
+});
+
+canvas.addEventListener('wheel', e => {
+  const factor = e.deltaY > 0 ? 0.92 : 1.08;
+  const newZoom = Math.max(0.3, Math.min(4, cam.zoom * factor));
+  // Zoom toward mouse
+  const mouseWorld = screenToWorld(e.clientX, e.clientY);
+  cam.zoom = newZoom;
+  const newScreen = worldToScreen(mouseWorld.x, mouseWorld.y);
+  cam.x -= (newScreen.x - e.clientX) / cam.zoom;
+  cam.y -= (newScreen.y - e.clientY) / cam.zoom;
+  e.preventDefault();
+}, { passive: false });
+
+// Touch
+let lastTouch = null, lastTouchDist = null;
+canvas.addEventListener('touchstart', e => {
+  if (e.touches.length === 1) {
+    const t = e.touches[0];
+    const pos = screenToWorld(t.clientX, t.clientY);
+    for (let i = allNodes.length - 1; i >= 0; i--) {
+      const n = allNodes[i];
+      const dx = pos.x - n.x, dy = pos.y - n.y;
+      if (dx*dx + dy*dy < (n.radius+4)*(n.radius+4)/(cam.zoom*cam.zoom)) {
+        dragNode = n; n.pinned = true; return;
+      }
+    }
+    isPanning = true;
+    panStart = {x:t.clientX, y:t.clientY};
+    camStart = {x:cam.x, y:cam.y};
+  } else if (e.touches.length === 2) {
+    const dx = e.touches[1].clientX - e.touches[0].clientX;
+    const dy = e.touches[1].clientY - e.touches[0].clientY;
+    lastTouchDist = Math.sqrt(dx*dx + dy*dy);
+  }
+});
+canvas.addEventListener('touchmove', e => {
+  if (dragNode && e.touches.length === 1) {
+    const pos = screenToWorld(e.touches[0].clientX, e.touches[0].clientY);
+    dragNode.x = pos.x; dragNode.y = pos.y;
+    e.preventDefault(); return;
+  }
+  if (isPanning && e.touches.length === 1) {
+    const t = e.touches[0];
+    cam.x = camStart.x - (t.clientX - panStart.x) / cam.zoom;
+    cam.y = camStart.y - (t.clientY - panStart.y) / cam.zoom;
+  }
+  if (e.touches.length === 2 && lastTouchDist) {
+    const dx = e.touches[1].clientX - e.touches[0].clientX;
+    const dy = e.touches[1].clientY - e.touches[0].clientY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    cam.zoom = Math.max(0.3, Math.min(4, cam.zoom * (dist / lastTouchDist)));
+    lastTouchDist = dist;
+  }
+  e.preventDefault();
+}, { passive: false });
+canvas.addEventListener('touchend', () => {
+  if (dragNode) { dragNode.pinned = false; dragNode = null; }
+  isPanning = false; lastTouchDist = null;
+});
+
+// Buttons
+document.getElementById('zoomIn').onclick = () => { cam.zoom = Math.min(4, cam.zoom * 1.3); };
+document.getElementById('zoomOut').onclick = () => { cam.zoom = Math.max(0.3, cam.zoom / 1.3); };
+document.getElementById('resetView').onclick = () => { cam = {x:0,y:0,zoom:1}; };
+
+// Search
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchHighlight = e.target.value.toLowerCase();
+});
+
+// Highlight cluster
+function highlightCluster(node) {
+  allNodes.forEach(n => { n.highlighted = false; });
+  node.highlighted = true;
+  allEdges.forEach(edge => {
+    if (edge.source === node) edge.target.highlighted = true;
+    if (edge.target === node) edge.source.highlighted = true;
+  });
+  // Auto-clear after 3s
+  setTimeout(() => { allNodes.forEach(n => { n.highlighted = false; }); }, 3000);
+}
+
+// ==================== RENDER ====================
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Background grid (Obsidian style)
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.02)';
+  ctx.lineWidth = 1;
+  const gridSize = 40 * cam.zoom;
+  const offX = (-cam.x * cam.zoom + W/2) % gridSize;
+  const offY = (-cam.y * cam.zoom + H/2) % gridSize;
+  for (let x = offX; x < W; x += gridSize) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = offY; y < H; y += gridSize) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+  ctx.restore();
+
+  // Draw edges
+  allEdges.forEach(edge => {
+    const s = worldToScreen(edge.source.x, edge.source.y);
+    const t = worldToScreen(edge.target.x, edge.target.y);
+
+    const isHighlighted = (edge.source.hovered || edge.target.hovered ||
+                          edge.source.highlighted || edge.target.highlighted);
+    const isDimmed = searchHighlight && !(
+      edge.source.label.toLowerCase().includes(searchHighlight) ||
+      edge.target.label.toLowerCase().includes(searchHighlight));
+
+    ctx.beginPath();
+    ctx.moveTo(s.x, s.y);
+    ctx.lineTo(t.x, t.y);
+
+    if (isHighlighted) {
+      ctx.strokeStyle = edge.isVol ? 'rgba(255,183,77,0.5)' : 'rgba(255,255,255,0.25)';
+      ctx.lineWidth = edge.isVol ? 1.5 : 1;
+    } else if (isDimmed) {
+      ctx.strokeStyle = 'rgba(255,255,255,0.02)';
+      ctx.lineWidth = 0.5;
+    } else {
+      ctx.strokeStyle = edge.isVol ? 'rgba(255,183,77,0.15)' : 'rgba(255,255,255,0.06)';
+      ctx.lineWidth = edge.isVol ? 1 : 0.5;
+    }
+    ctx.stroke();
+  });
+
+  // Draw nodes
+  allNodes.forEach(n => {
+    const s = worldToScreen(n.x, n.y);
+    const r = n.radius * cam.zoom;
+
+    const isDimmed = searchHighlight && !n.label.toLowerCase().includes(searchHighlight);
+    const isActive = n.hovered || n.highlighted;
+
+    // Glow
+    if (isActive && !isDimmed) {
+      const glow = ctx.createRadialGradient(s.x, s.y, r, s.x, s.y, r * 3);
+      glow.addColorStop(0, n.color + '40');
+      glow.addColorStop(1, n.color + '00');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, r * 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Node circle
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
+    if (isDimmed) {
+      ctx.fillStyle = n.color + '15';
+    } else if (isActive) {
+      ctx.fillStyle = n.color;
+    } else {
+      ctx.fillStyle = n.color + 'aa';
+    }
+    ctx.fill();
+
+    // Border
+    if (isActive && !isDimmed) {
+      ctx.strokeStyle = n.color;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // Label
+    if (cam.zoom > 0.5 || n.isVol || isActive) {
+      const fontSize = n.isVol ? Math.max(11, 13 * cam.zoom) : Math.max(9, 10 * cam.zoom);
+      ctx.font = (n.isVol ? 'bold ' : '') + fontSize + 'px -apple-system, Noto Sans SC, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+
+      if (isDimmed) {
+        ctx.fillStyle = 'rgba(255,255,255,0.1)';
+      } else if (isActive) {
+        // Shadow for readability
+        ctx.shadowColor = 'rgba(0,0,0,0.8)';
+        ctx.shadowBlur = 6;
+        ctx.fillStyle = '#fff';
+      } else {
+        ctx.shadowColor = 'rgba(0,0,0,0.6)';
+        ctx.shadowBlur = 4;
+        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      }
+      ctx.fillText(n.label, s.x, s.y + r + 4);
+      ctx.shadowBlur = 0;
+    }
+  });
+}
+
+// ==================== LOOP ====================
+function loop() {
+  simulate();
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
