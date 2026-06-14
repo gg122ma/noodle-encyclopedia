@@ -3,204 +3,374 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>面史纪元 - 3D面条宇宙</title>
+<title>面史纪元 · 知识图谱</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { overflow: hidden; background: #0a0a12; font-family: 'Noto Sans SC', sans-serif; }
-canvas { display: block; }
-#info {
-  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-  color: rgba(255,255,255,0.6); font-size: 13px; text-align: center;
-  pointer-events: none;
+body {
+  overflow: hidden;
+  background: #1a1a2e;
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #e0e0e0;
+}
+canvas { display: block; cursor: grab; }
+canvas:active { cursor: grabbing; }
+#header {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: 16px 24px;
+  background: linear-gradient(180deg, rgba(26,26,46,0.95) 0%, rgba(26,26,46,0) 100%);
+  pointer-events: none; z-index: 10;
+}
+#header h1 {
+  font-size: 20px; font-weight: 600; color: #FFB74D;
+  letter-spacing: 0.05em;
+}
+#header p {
+  font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px;
+}
+#legend {
+  position: absolute; bottom: 20px; left: 20px;
+  background: rgba(30,30,50,0.85); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px; padding: 14px 18px; font-size: 12px;
+  backdrop-filter: blur(8px); z-index: 10;
+}
+#legend .row { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+#legend .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+#hint {
+  position: absolute; bottom: 20px; right: 20px;
+  font-size: 11px; color: rgba(255,255,255,0.3);
+  z-index: 10; text-align: right;
 }
 #tooltip {
   position: absolute; display: none; pointer-events: none;
-  background: rgba(0,0,0,0.85); color: #fff; padding: 8px 14px;
-  border-radius: 6px; font-size: 14px; border: 1px solid rgba(255,143,0,0.5);
-  white-space: nowrap;
+  background: rgba(20,20,40,0.92); color: #fff;
+  padding: 10px 16px; border-radius: 8px; font-size: 13px;
+  border: 1px solid rgba(255,183,77,0.4);
+  backdrop-filter: blur(6px); z-index: 20;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  max-width: 220px;
 }
-#title {
-  position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-  color: #FF8F00; font-size: 22px; font-weight: bold; text-align: center;
-  pointer-events: none; text-shadow: 0 0 20px rgba(255,143,0,0.5);
-}
+#tooltip .tt-name { font-weight: 600; color: #FFB74D; font-size: 14px; }
+#tooltip .tt-info { color: rgba(255,255,255,0.6); margin-top: 4px; font-size: 11px; }
+#tooltip .tt-hint { color: rgba(255,255,255,0.35); margin-top: 6px; font-size: 10px; }
 </style>
 </head>
 <body>
-<div id="title">🍜 面史纪元百科全书 · 3D面条宇宙</div>
+<div id="header">
+  <h1>🍜 面史纪元百科全书</h1>
+  <p>拖拽旋转 · 滚轮缩放 · 点击节点进入对应卷</p>
+</div>
+<div id="legend">
+  <div style="font-weight:600;margin-bottom:6px;color:#FFB74D;">图例</div>
+  <div class="row"><div class="dot" style="background:#FF8F00"></div>编年史</div>
+  <div class="row"><div class="dot" style="background:#42A5F5"></div>地理与国家</div>
+  <div class="row"><div class="dot" style="background:#66BB6A"></div>人物传记</div>
+  <div class="row"><div class="dot" style="background:#AB47BC"></div>科技与工程</div>
+  <div class="row"><div class="dot" style="background:#EF5350"></div>宗教与信仰</div>
+  <div class="row"><div class="dot" style="background:#78909C"></div>军事与战争</div>
+  <div class="row"><div class="dot" style="background:#26A69A"></div>经济与贸易</div>
+  <div class="row"><div class="dot" style="background:#EC407A"></div>文化与艺术</div>
+  <div class="row"><div class="dot" style="background:#5C6BC0"></div>科学与学术</div>
+  <div class="row"><div class="dot" style="background:#FFA726"></div>社会与日常</div>
+</div>
+<div id="hint">鼠标拖拽旋转<br>滚轮缩放<br>点击节点跳转</div>
 <div id="tooltip"></div>
-<div id="info">拖拽旋转 · 滚轮缩放 · 点击节点进入对应卷</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const VOLUMES = [
-  { name: '卷一·编年史',      entries: 13, color: 0xFF8F00, url: 'history/' },
-  { name: '卷二·地理与国家',  entries: 16, color: 0x1565C0, url: 'geography/' },
-  { name: '卷三·人物传记',    entries: 19, color: 0x2E7D32, url: 'figures/' },
-  { name: '卷四·科技与工程',  entries: 13, color: 0x7B1FA2, url: 'technology/' },
-  { name: '卷五·宗教与信仰',  entries: 11, color: 0xC62828, url: 'religion/' },
-  { name: '卷六·军事与战争',  entries: 10, color: 0x37474F, url: 'military/' },
-  { name: '卷七·经济与贸易',  entries: 9,  color: 0x00695C, url: 'economy/' },
-  { name: '卷八·文化与艺术',  entries: 11, color: 0xAD1457, url: 'culture/' },
-  { name: '卷九·科学与学术',  entries: 9,  color: 0x283593, url: 'science/' },
-  { name: '卷十·社会与日常',  entries: 9,  color: 0xE65100, url: 'society/' },
+  { name: '卷一 · 编年史',      entries: 13, color: '#FF8F00', hex: 0xFF8F00, url: 'history/' },
+  { name: '卷二 · 地理与国家',  entries: 16, color: '#42A5F5', hex: 0x42A5F5, url: 'geography/' },
+  { name: '卷三 · 人物传记',    entries: 19, color: '#66BB6A', hex: 0x66BB6A, url: 'figures/' },
+  { name: '卷四 · 科技与工程',  entries: 13, color: '#AB47BC', hex: 0xAB47BC, url: 'technology/' },
+  { name: '卷五 · 宗教与信仰',  entries: 11, color: '#EF5350', hex: 0xEF5350, url: 'religion/' },
+  { name: '卷六 · 军事与战争',  entries: 10, color: '#78909C', hex: 0x78909C, url: 'military/' },
+  { name: '卷七 · 经济与贸易',  entries: 9,  color: '#26A69A', hex: 0x26A69A, url: 'economy/' },
+  { name: '卷八 · 文化与艺术',  entries: 11, color: '#EC407A', hex: 0xEC407A, url: 'culture/' },
+  { name: '卷九 · 科学与学术',  entries: 9,  color: '#5C6BC0', hex: 0x5C6BC0, url: 'science/' },
+  { name: '卷十 · 社会与日常',  entries: 9,  color: '#FFA726', hex: 0xFFA726, url: 'society/' },
 ];
 
+// Cross-references between volumes
 const EDGES = [
-  [0,1],[0,2],[0,5],[1,2],[1,6],[2,3],[3,4],[3,8],
-  [4,9],[5,6],[6,7],[7,8],[8,9],[0,3],[1,4],[5,7]
+  [0,1],[0,2],[0,3],[0,5],[0,9],
+  [1,2],[1,6],[1,9],
+  [2,3],[2,4],[2,7],
+  [3,4],[3,5],[3,8],
+  [4,7],[4,9],
+  [5,6],[5,7],
+  [6,7],[6,9],
+  [7,8],[7,9],
+  [8,9]
 ];
 
+// --- Three.js setup ---
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
-camera.position.set(0, 2, 12);
+scene.background = new THREE.Color(0x1a1a2e);
+scene.fog = new THREE.FogExp2(0x1a1a2e, 0.015);
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 500);
+camera.position.set(0, 1.5, 14);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
 document.body.appendChild(renderer.domElement);
 
-scene.add(new THREE.AmbientLight(0x404040, 1.5));
-const pointLight = new THREE.PointLight(0xffffff, 1, 50);
-pointLight.position.set(5, 8, 5);
-scene.add(pointLight);
+// Lights - brighter ambient for visibility
+scene.add(new THREE.AmbientLight(0x8888aa, 0.8));
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+dirLight.position.set(5, 10, 7);
+scene.add(dirLight);
 
 const group = new THREE.Group();
 scene.add(group);
 
+// --- Create nodes ---
 const nodes = [];
 const nodeMeshes = [];
+const labelSprites = [];
 const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 
 VOLUMES.forEach((vol, i) => {
   const t = i / (VOLUMES.length - 1);
   const angle = i * GOLDEN_ANGLE;
-  const radius = 3 + Math.sin(t * Math.PI) * 1.5;
-  const y = (t - 0.5) * 5;
+  const radius = 3.5 + Math.sin(t * Math.PI) * 1.2;
+  const y = (t - 0.5) * 5.5;
   const x = Math.cos(angle) * radius;
   const z = Math.sin(angle) * radius;
-  const size = 0.3 + (vol.entries / 19) * 0.35;
+  const size = 0.35 + (vol.entries / 19) * 0.3;
 
-  const geo = new THREE.IcosahedronGeometry(size, 2);
-  const mat = new THREE.MeshPhongMaterial({
-    color: vol.color, emissive: vol.color, emissiveIntensity: 0.4,
-    shininess: 80, transparent: true, opacity: 0.9
+  // Main sphere - bright and solid
+  const geo = new THREE.SphereGeometry(size, 32, 32);
+  const mat = new THREE.MeshStandardMaterial({
+    color: vol.hex,
+    emissive: vol.hex,
+    emissiveIntensity: 0.6,
+    metalness: 0.2,
+    roughness: 0.3,
   });
   const mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(x, y, z);
-  mesh.userData = { index: i, name: vol.name, url: vol.url, baseSize: size };
+  mesh.userData = { index: i, name: vol.name, url: vol.url, baseSize: size, color: vol.color };
   group.add(mesh);
-  nodes.push({ pos: new THREE.Vector3(x, y, z), mesh });
+  nodes.push({ pos: new THREE.Vector3(x, y, z), mesh, color: vol.color });
   nodeMeshes.push(mesh);
 
-  const glowGeo = new THREE.IcosahedronGeometry(size * 1.6, 2);
-  const glowMat = new THREE.MeshBasicMaterial({
-    color: vol.color, transparent: true, opacity: 0.08
+  // Outer glow ring
+  const ringGeo = new THREE.RingGeometry(size * 1.3, size * 1.8, 32);
+  const ringMat = new THREE.MeshBasicMaterial({
+    color: vol.hex, transparent: true, opacity: 0.15, side: THREE.DoubleSide
   });
-  const glow = new THREE.Mesh(glowGeo, glowMat);
-  glow.position.copy(mesh.position);
-  group.add(glow);
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.position.copy(mesh.position);
+  ring.lookAt(camera.position);
+  group.add(ring);
+  mesh.userData.ring = ring;
+
+  // Text label as sprite
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = 512; canvas.height = 128;
+  ctx.fillStyle = 'transparent';
+  ctx.fillRect(0, 0, 512, 128);
+  ctx.font = 'bold 36px Noto Sans SC, PingFang SC, Microsoft YaHei, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // Text shadow for readability
+  ctx.shadowColor = 'rgba(0,0,0,0.8)';
+  ctx.shadowBlur = 8;
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(vol.name, 256, 44);
+  ctx.font = '24px Noto Sans SC, PingFang SC, Microsoft YaHei, sans-serif';
+  ctx.fillStyle = vol.color;
+  ctx.fillText(vol.entries + ' 条目', 256, 90);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.9 });
+  const sprite = new THREE.Sprite(spriteMat);
+  sprite.position.set(x, y - size - 0.6, z);
+  sprite.scale.set(3.2, 0.8, 1);
+  group.add(sprite);
+  labelSprites.push(sprite);
 });
 
+// --- Create edges ---
+const edgeLines = [];
 EDGES.forEach(([a, b]) => {
-  const pts = [nodes[a].pos, nodes[b].pos];
-  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  const points = [];
+  const pA = nodes[a].pos, pB = nodes[b].pos;
+  // Curved line via midpoint
+  const mid = new THREE.Vector3().addVectors(pA, pB).multiplyScalar(0.5);
+  mid.y += 0.3;
+  const curve = new THREE.QuadraticBezierCurve3(pA, mid, pB);
+  const curvePoints = curve.getPoints(20);
+  const geo = new THREE.BufferGeometry().setFromPoints(curvePoints);
+
+  // Gradient-ish line: brighter near nodes
+  const colors = [];
+  for (let j = 0; j <= 20; j++) {
+    const t = j / 20;
+    const alpha = Math.sin(t * Math.PI); // bright in middle
+    const c = new THREE.Color(0xFFB74D);
+    c.multiplyScalar(0.3 + alpha * 0.4);
+    colors.push(c.r, c.g, c.b);
+  }
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
   const mat = new THREE.LineBasicMaterial({
-    color: 0xFF8F00, transparent: true, opacity: 0.15
+    vertexColors: true, transparent: true, opacity: 0.35
   });
-  group.add(new THREE.Line(geo, mat));
+  const line = new THREE.Line(geo, mat);
+  group.add(line);
+  edgeLines.push(line);
 });
 
-// Noodle particles
-const particleCount = 300;
+// --- Ambient particles ---
+const pCount = 200;
 const pGeo = new THREE.BufferGeometry();
-const pPos = new Float32Array(particleCount * 3);
-const pVel = [];
-for (let i = 0; i < particleCount; i++) {
-  pPos[i*3]   = (Math.random() - 0.5) * 20;
-  pPos[i*3+1] = (Math.random() - 0.5) * 20;
-  pPos[i*3+2] = (Math.random() - 0.5) * 20;
-  pVel.push(new THREE.Vector3(
-    (Math.random()-0.5)*0.005, (Math.random()-0.5)*0.005, (Math.random()-0.5)*0.005
-  ));
+const pPositions = new Float32Array(pCount * 3);
+const pColors = new Float32Array(pCount * 3);
+for (let i = 0; i < pCount; i++) {
+  pPositions[i*3]   = (Math.random() - 0.5) * 24;
+  pPositions[i*3+1] = (Math.random() - 0.5) * 18;
+  pPositions[i*3+2] = (Math.random() - 0.5) * 24;
+  const c = new THREE.Color().setHSL(Math.random() * 0.1 + 0.08, 0.6, 0.7);
+  pColors[i*3] = c.r; pColors[i*3+1] = c.g; pColors[i*3+2] = c.b;
 }
-pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-const pMat = new THREE.PointsMaterial({ color: 0xFFB74D, size: 0.04, transparent: true, opacity: 0.5 });
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+pGeo.setAttribute('color', new THREE.BufferAttribute(pColors, 3));
+const pMat = new THREE.PointsMaterial({
+  size: 0.06, vertexColors: true, transparent: true, opacity: 0.5,
+  blending: THREE.AdditiveBlending, depthWrite: false
+});
 const particles = new THREE.Points(pGeo, pMat);
 scene.add(particles);
 
-// Interaction
+// --- Interaction ---
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let isDragging = false, prevMouse = { x: 0, y: 0 };
-let rotVel = { x: 0.002, y: 0.003 };
+let rotVel = { x: 0.001, y: 0.002 };
 let hovered = null;
 
 renderer.domElement.addEventListener('mousedown', e => {
-  isDragging = true; prevMouse = { x: e.clientX, y: e.clientY };
+  isDragging = true;
+  prevMouse = { x: e.clientX, y: e.clientY };
 });
+
 renderer.domElement.addEventListener('mousemove', e => {
   mouse.x = (e.clientX / innerWidth) * 2 - 1;
   mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+
   if (isDragging) {
-    rotVel.y = (e.clientX - prevMouse.x) * 0.003;
-    rotVel.x = (e.clientY - prevMouse.y) * 0.003;
+    rotVel.y = (e.clientX - prevMouse.x) * 0.004;
+    rotVel.x = (e.clientY - prevMouse.y) * 0.004;
     prevMouse = { x: e.clientX, y: e.clientY };
   }
+
+  // Raycast
   raycaster.setFromCamera(mouse, camera);
   const hits = raycaster.intersectObjects(nodeMeshes);
   const tooltip = document.getElementById('tooltip');
+
   if (hits.length > 0) {
     const d = hits[0].object.userData;
+    const vol = VOLUMES[d.index];
     tooltip.style.display = 'block';
-    tooltip.style.left = e.clientX + 15 + 'px';
-    tooltip.style.top = e.clientY - 10 + 'px';
-    tooltip.textContent = d.name + ' (' + VOLUMES[d.index].entries + '条)';
+    tooltip.style.left = Math.min(e.clientX + 18, innerWidth - 240) + 'px';
+    tooltip.style.top = Math.min(e.clientY - 10, innerHeight - 100) + 'px';
+    tooltip.innerHTML =
+      '<div class="tt-name">' + vol.name + '</div>' +
+      '<div class="tt-info">' + vol.entries + ' 个条目 · 点击进入</div>' +
+      '<div class="tt-hint">涵盖该领域的完整知识</div>';
     renderer.domElement.style.cursor = 'pointer';
     hovered = hits[0].object;
   } else {
     tooltip.style.display = 'none';
-    renderer.domElement.style.cursor = 'grab';
+    renderer.domElement.style.cursor = isDragging ? 'grabbing' : 'grab';
     hovered = null;
   }
 });
-renderer.domElement.addEventListener('mouseup', () => isDragging = false);
+
+renderer.domElement.addEventListener('mouseup', () => { isDragging = false; });
+renderer.domElement.addEventListener('mouseleave', () => { isDragging = false; });
+
 renderer.domElement.addEventListener('click', () => {
-  if (hovered) window.location.href = hovered.userData.url;
+  if (hovered && !isDragging) {
+    window.location.href = hovered.userData.url;
+  }
 });
+
 renderer.domElement.addEventListener('wheel', e => {
-  camera.position.z = Math.max(5, Math.min(25, camera.position.z + e.deltaY * 0.01));
+  camera.position.z = Math.max(6, Math.min(25, camera.position.z + e.deltaY * 0.01));
+  e.preventDefault();
+}, { passive: false });
+
+// Touch support
+let touchStart = null;
+renderer.domElement.addEventListener('touchstart', e => {
+  if (e.touches.length === 1) {
+    touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    isDragging = true;
+  }
 });
+renderer.domElement.addEventListener('touchmove', e => {
+  if (touchStart && e.touches.length === 1) {
+    const dx = e.touches[0].clientX - touchStart.x;
+    const dy = e.touches[0].clientY - touchStart.y;
+    rotVel.y = dx * 0.005;
+    rotVel.x = dy * 0.005;
+    touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }
+  e.preventDefault();
+}, { passive: false });
+renderer.domElement.addEventListener('touchend', () => { isDragging = false; touchStart = null; });
+
 window.addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 });
 
+// --- Animate ---
 function animate() {
   requestAnimationFrame(animate);
+
+  // Auto-rotate when not dragging
   if (!isDragging) {
-    rotVel.x *= 0.95; rotVel.y *= 0.95;
-    rotVel.x = Math.abs(rotVel.x) < 0.001 ? 0.001 : rotVel.x;
-    rotVel.y = Math.abs(rotVel.y) < 0.001 ? 0.0015 : rotVel.y;
+    rotVel.x *= 0.96;
+    rotVel.y *= 0.96;
+    if (Math.abs(rotVel.y) < 0.0008) rotVel.y = 0.0012;
+    if (Math.abs(rotVel.x) < 0.0005) rotVel.x = 0.0006;
   }
+
   group.rotation.x += rotVel.x;
   group.rotation.y += rotVel.y;
 
+  // Pulse nodes
   const t = Date.now() * 0.001;
   nodeMeshes.forEach((m, i) => {
-    const pulse = 1 + Math.sin(t * 2 + i) * 0.08;
+    const pulse = 1 + Math.sin(t * 1.8 + i * 1.2) * 0.06;
     m.scale.setScalar(pulse);
-    m.material.emissiveIntensity = hovered === m ? 0.8 : 0.4 + Math.sin(t * 1.5 + i) * 0.1;
+    m.material.emissiveIntensity = hovered === m ? 1.0 : 0.5 + Math.sin(t * 1.2 + i) * 0.15;
+    // Keep rings facing camera
+    if (m.userData.ring) {
+      m.userData.ring.lookAt(camera.position);
+      m.userData.ring.material.opacity = hovered === m ? 0.3 : 0.12 + Math.sin(t * 1.5 + i) * 0.05;
+    }
   });
 
+  // Labels always face camera
+  labelSprites.forEach(s => { s.lookAt(camera.position); });
+
+  // Drift particles
   const pos = particles.geometry.attributes.position.array;
-  for (let i = 0; i < particleCount; i++) {
-    pos[i*3]   += pVel[i].x;
-    pos[i*3+1] += pVel[i].y;
-    pos[i*3+2] += pVel[i].z;
-    if (Math.abs(pos[i*3]) > 10) pVel[i].x *= -1;
-    if (Math.abs(pos[i*3+1]) > 10) pVel[i].y *= -1;
-    if (Math.abs(pos[i*3+2]) > 10) pVel[i].z *= -1;
+  for (let i = 0; i < pCount; i++) {
+    pos[i*3]   += Math.sin(t * 0.3 + i) * 0.002;
+    pos[i*3+1] += Math.cos(t * 0.2 + i * 0.7) * 0.002;
+    pos[i*3+2] += Math.sin(t * 0.25 + i * 0.5) * 0.002;
   }
   particles.geometry.attributes.position.needsUpdate = true;
 
