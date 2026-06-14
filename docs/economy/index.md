@@ -14,3 +14,10 @@
 | [面食丝绸之路](noodle-silk-road.md) | 连接全球的面条贸易路线网络 |
 | [速食通货膨胀](instant-inflation.md) | 面条文明特有的经济现象 |
 | [高汤央行](broth-central-bank.md) | Earth-面最重要的金融机构 |
+
+---
+
+<div style="display:flex; justify-content:space-between; margin-top:2em; padding-top:1em; border-top:2px solid #FF8F00;">
+  <a href="../military/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">← 卷 · 军事与战争</a>
+  <a href="../culture/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">卷 · 文化与艺术 →</a>
+</div>

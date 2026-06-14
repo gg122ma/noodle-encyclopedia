@@ -47,7 +47,7 @@ theme:
 
 plugins:
   - search:
-      lang: zh
+      lang: [zh, en]
   - tags
 
 markdown_extensions:
@@ -90,6 +90,63 @@ extra:
     - name: 中文
       link: /
       lang: zh
+    - name: English
+      link: /en/
+      lang: en
+    - name: 日本語
+      link: /ja/
+      lang: ja
+    - name: 한국어
+      link: /ko/
+      lang: ko
+    - name: Français
+      link: /fr/
+      lang: fr
+    - name: Deutsch
+      link: /de/
+      lang: de
+    - name: Español
+      link: /es/
+      lang: es
+    - name: Português
+      link: /pt/
+      lang: pt
+    - name: Русский
+      link: /ru/
+      lang: ru
+    - name: العربية
+      link: /ar/
+      lang: ar
+    - name: हिन्दी
+      link: /hi/
+      lang: hi
+    - name: ไทย
+      link: /th/
+      lang: th
+    - name: Tiếng Việt
+      link: /vi/
+      lang: vi
+    - name: Türkçe
+      link: /tr/
+      lang: tr
+    - name: Italiano
+      link: /it/
+      lang: it
+    - name: Nederlands
+      link: /nl/
+      lang: nl
+    - name: Polski
+      link: /pl/
+      lang: pl
+    - name: Svenska
+      link: /sv/
+      lang: sv
+    - name: Bahasa Indonesia
+      link: /id/
+      lang: id
+    - name: Bahasa Melayu
+      link: /ms/
+      lang: ms
   generator: false
   analytics:
     provider: google

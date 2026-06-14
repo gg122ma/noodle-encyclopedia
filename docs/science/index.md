@@ -14,3 +14,10 @@
 | [高汤流体力学](broth-fluid-dynamics.md) | 研究骨汤流动行为的物理学分支 |
 | [速食心理学](instant-psychology.md) | 研究等待泡面时心理状态的心理学分支 |
 | [面食天文学](noodle-astronomy.md) | 从面条角度研究宇宙的天文学分支 |
+
+---
+
+<div style="display:flex; justify-content:space-between; margin-top:2em; padding-top:1em; border-top:2px solid #FF8F00;">
+  <a href="../culture/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">← 卷 · 文化与艺术</a>
+  <a href="../society/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">卷 · 社会与日常 →</a>
+</div>

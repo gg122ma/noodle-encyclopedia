@@ -87,3 +87,10 @@ Earth-面的政治体制深受面条文化影响。主要政体类型包括：
 ## 参考文献
 
 [^1]: 面条柯布西耶，《面条建筑学》，面元82年（1925年），第234-267页。
+
+---
+
+<div style="display:flex; justify-content:space-between; margin-top:2em; padding-top:1em; border-top:2px solid #FF8F00;">
+  <a href="../history/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">← 卷 · 编年史</a>
+  <a href="../figures/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">卷 · 人物传记 →</a>
+</div>

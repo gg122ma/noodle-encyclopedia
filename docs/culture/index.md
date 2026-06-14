@@ -16,3 +16,10 @@
 | [三分钟摇滚](three-minute-rock.md) | 每首歌严格3分钟的摇滚乐 |
 | [面食建筑主义](noodle-architectural-movement.md) | 模仿面条结构的建筑风格 |
 | [速食时尚](instant-fashion.md) | 以面条和调味包为灵感的时尚产业 |
+
+---
+
+<div style="display:flex; justify-content:space-between; margin-top:2em; padding-top:1em; border-top:2px solid #FF8F00;">
+  <a href="../economy/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">← 卷 · 经济与贸易</a>
+  <a href="../science/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">卷 · 科学与学术 →</a>
+</div>

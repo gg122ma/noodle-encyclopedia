@@ -16,3 +16,10 @@
 | [面食诺斯底主义](noodle-gnosticism.md) | 面条中隐藏着宇宙的秘密知识 |
 | [辣味千禧年运动](spice-millennialism.md) | 辣味的终末论信仰 |
 | [无味虚无主义](flavorless-nihilism.md) | 面条本无味，味皆虚妄 |
+
+---
+
+<div style="display:flex; justify-content:space-between; margin-top:2em; padding-top:1em; border-top:2px solid #FF8F00;">
+  <a href="../technology/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">← 卷 · 科技与工程</a>
+  <a href="../military/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">卷 · 军事与战争 →</a>
+</div>

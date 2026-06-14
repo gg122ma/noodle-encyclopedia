@@ -16,3 +16,10 @@
 | [面条导弹系统](noodle-missile-system.md) | 以面条为弹体的远程武器 |
 | [油炸空降师](fried-airborne-division.md) | 油炸群岛的精锐空降部队 |
 | [终极方便面威慑](ultimate-instant-deterrence.md) | 面条文明的核武器等价物 |
+
+---
+
+<div style="display:flex; justify-content:space-between; margin-top:2em; padding-top:1em; border-top:2px solid #FF8F00;">
+  <a href="../religion/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">← 卷 · 宗教与信仰</a>
+  <a href="../economy/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">卷 · 经济与贸易 →</a>
+</div>

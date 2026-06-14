@@ -63,3 +63,10 @@ timeline
 这一方法论由**面团联邦历史学院**院长**干面禅师六祖慧能**于面元89年（1932年）创立，至今仍是面史学界的金标准[^1]。
 
 [^1]: 六祖慧能，《三泡法：面条史学方法论初探》，老坛学术出版社，面元89年（1932年），第1-47页。
+
+---
+
+<div style="display:flex; justify-content:space-between; margin-top:2em; padding-top:1em; border-top:2px solid #FF8F00;">
+  <a href="../society/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">← 卷 · 社会与日常</a>
+  <a href="../geography/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">卷 · 地理与国家 →</a>
+</div>

@@ -28,3 +28,10 @@
 | [面条达芬奇](noodle-da-vinci.md) | 1821-1899 | 发明家/艺术家 | 面条引擎发明者 |
 | [速食教父安藤百福](instant-patron-ando.md) | 1910-2007 | 企业家/发明家 | 现代方便面之父 |
 | [高汤女皇叶卡捷琳娜](broth-empress-catherine.md) | 1840-1910 | 君主 | 高汤共和国奠基者 |
+
+---
+
+<div style="display:flex; justify-content:space-between; margin-top:2em; padding-top:1em; border-top:2px solid #FF8F00;">
+  <a href="../geography/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">← 卷 · 地理与国家</a>
+  <a href="../technology/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">卷 · 科技与工程 →</a>
+</div>

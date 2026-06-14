@@ -50,3 +50,10 @@ graph TD
 | [面饼太阳能板](noodle-cake-solar-panel.md) | 以脱水面饼为基底的太阳能电池 |
 | [骨汤人工智能](broth-artificial-intelligence.md) | 基于面条量子网络的AI系统 |
 | [调味基因编辑](flavor-gene-editing.md) | 通过基因编辑定制面条风味的技术 |
+
+---
+
+<div style="display:flex; justify-content:space-between; margin-top:2em; padding-top:1em; border-top:2px solid #FF8F00;">
+  <a href="../figures/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">← 卷 · 人物传记</a>
+  <a href="../religion/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">卷 · 宗教与信仰 →</a>
+</div>

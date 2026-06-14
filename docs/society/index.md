@@ -14,3 +14,10 @@
 | [面食方言](noodle-dialects.md) | 与面条相关的方言和俚语 |
 | [面食节庆](noodle-festivals.md) | 面条文明的节日和庆典 |
 | [退休面礼](retirement-noodle-gift.md) | 退休时赠送面条的传统 |
+
+---
+
+<div style="display:flex; justify-content:space-between; margin-top:2em; padding-top:1em; border-top:2px solid #FF8F00;">
+  <a href="../science/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">← 卷 · 科学与学术</a>
+  <a href="../history/index.md" style="color:#FF8F00; text-decoration:none; font-weight:bold;">卷 · 编年史 →</a>
+</div>
