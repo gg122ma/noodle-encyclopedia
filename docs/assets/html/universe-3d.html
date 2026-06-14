@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>面史纪元 - 3D面条宇宙</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { overflow: hidden; background: #0a0a12; font-family: 'Noto Sans SC', sans-serif; }
+canvas { display: block; }
+#info {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  color: rgba(255,255,255,0.6); font-size: 13px; text-align: center;
+  pointer-events: none;
+}
+#tooltip {
+  position: absolute; display: none; pointer-events: none;
+  background: rgba(0,0,0,0.85); color: #fff; padding: 8px 14px;
+  border-radius: 6px; font-size: 14px; border: 1px solid rgba(255,143,0,0.5);
+  white-space: nowrap;
+}
+#title {
+  position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+  color: #FF8F00; font-size: 22px; font-weight: bold; text-align: center;
+  pointer-events: none; text-shadow: 0 0 20px rgba(255,143,0,0.5);
+}
+</style>
+</head>
+<body>
+<div id="title">🍜 面史纪元百科全书 · 3D面条宇宙</div>
+<div id="tooltip"></div>
+<div id="info">拖拽旋转 · 滚轮缩放 · 点击节点进入对应卷</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const VOLUMES = [
+  { name: '卷一·编年史',      entries: 13, color: 0xFF8F00, url: 'history/' },
+  { name: '卷二·地理与国家',  entries: 16, color: 0x1565C0, url: 'geography/' },
+  { name: '卷三·人物传记',    entries: 19, color: 0x2E7D32, url: 'figures/' },
+  { name: '卷四·科技与工程',  entries: 13, color: 0x7B1FA2, url: 'technology/' },
+  { name: '卷五·宗教与信仰',  entries: 11, color: 0xC62828, url: 'religion/' },
+  { name: '卷六·军事与战争',  entries: 10, color: 0x37474F, url: 'military/' },
+  { name: '卷七·经济与贸易',  entries: 9,  color: 0x00695C, url: 'economy/' },
+  { name: '卷八·文化与艺术',  entries: 11, color: 0xAD1457, url: 'culture/' },
+  { name: '卷九·科学与学术',  entries: 9,  color: 0x283593, url: 'science/' },
+  { name: '卷十·社会与日常',  entries: 9,  color: 0xE65100, url: 'society/' },
+];
+
+const EDGES = [
+  [0,1],[0,2],[0,5],[1,2],[1,6],[2,3],[3,4],[3,8],
+  [4,9],[5,6],[6,7],[7,8],[8,9],[0,3],[1,4],[5,7]
+];
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
+camera.position.set(0, 2, 12);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404040, 1.5));
+const pointLight = new THREE.PointLight(0xffffff, 1, 50);
+pointLight.position.set(5, 8, 5);
+scene.add(pointLight);
+
+const group = new THREE.Group();
+scene.add(group);
+
+const nodes = [];
+const nodeMeshes = [];
+const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+
+VOLUMES.forEach((vol, i) => {
+  const t = i / (VOLUMES.length - 1);
+  const angle = i * GOLDEN_ANGLE;
+  const radius = 3 + Math.sin(t * Math.PI) * 1.5;
+  const y = (t - 0.5) * 5;
+  const x = Math.cos(angle) * radius;
+  const z = Math.sin(angle) * radius;
+  const size = 0.3 + (vol.entries / 19) * 0.35;
+
+  const geo = new THREE.IcosahedronGeometry(size, 2);
+  const mat = new THREE.MeshPhongMaterial({
+    color: vol.color, emissive: vol.color, emissiveIntensity: 0.4,
+    shininess: 80, transparent: true, opacity: 0.9
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(x, y, z);
+  mesh.userData = { index: i, name: vol.name, url: vol.url, baseSize: size };
+  group.add(mesh);
+  nodes.push({ pos: new THREE.Vector3(x, y, z), mesh });
+  nodeMeshes.push(mesh);
+
+  const glowGeo = new THREE.IcosahedronGeometry(size * 1.6, 2);
+  const glowMat = new THREE.MeshBasicMaterial({
+    color: vol.color, transparent: true, opacity: 0.08
+  });
+  const glow = new THREE.Mesh(glowGeo, glowMat);
+  glow.position.copy(mesh.position);
+  group.add(glow);
+});
+
+EDGES.forEach(([a, b]) => {
+  const pts = [nodes[a].pos, nodes[b].pos];
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  const mat = new THREE.LineBasicMaterial({
+    color: 0xFF8F00, transparent: true, opacity: 0.15
+  });
+  group.add(new THREE.Line(geo, mat));
+});
+
+// Noodle particles
+const particleCount = 300;
+const pGeo = new THREE.BufferGeometry();
+const pPos = new Float32Array(particleCount * 3);
+const pVel = [];
+for (let i = 0; i < particleCount; i++) {
+  pPos[i*3]   = (Math.random() - 0.5) * 20;
+  pPos[i*3+1] = (Math.random() - 0.5) * 20;
+  pPos[i*3+2] = (Math.random() - 0.5) * 20;
+  pVel.push(new THREE.Vector3(
+    (Math.random()-0.5)*0.005, (Math.random()-0.5)*0.005, (Math.random()-0.5)*0.005
+  ));
+}
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+const pMat = new THREE.PointsMaterial({ color: 0xFFB74D, size: 0.04, transparent: true, opacity: 0.5 });
+const particles = new THREE.Points(pGeo, pMat);
+scene.add(particles);
+
+// Interaction
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let isDragging = false, prevMouse = { x: 0, y: 0 };
+let rotVel = { x: 0.002, y: 0.003 };
+let hovered = null;
+
+renderer.domElement.addEventListener('mousedown', e => {
+  isDragging = true; prevMouse = { x: e.clientX, y: e.clientY };
+});
+renderer.domElement.addEventListener('mousemove', e => {
+  mouse.x = (e.clientX / innerWidth) * 2 - 1;
+  mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+  if (isDragging) {
+    rotVel.y = (e.clientX - prevMouse.x) * 0.003;
+    rotVel.x = (e.clientY - prevMouse.y) * 0.003;
+    prevMouse = { x: e.clientX, y: e.clientY };
+  }
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(nodeMeshes);
+  const tooltip = document.getElementById('tooltip');
+  if (hits.length > 0) {
+    const d = hits[0].object.userData;
+    tooltip.style.display = 'block';
+    tooltip.style.left = e.clientX + 15 + 'px';
+    tooltip.style.top = e.clientY - 10 + 'px';
+    tooltip.textContent = d.name + ' (' + VOLUMES[d.index].entries + '条)';
+    renderer.domElement.style.cursor = 'pointer';
+    hovered = hits[0].object;
+  } else {
+    tooltip.style.display = 'none';
+    renderer.domElement.style.cursor = 'grab';
+    hovered = null;
+  }
+});
+renderer.domElement.addEventListener('mouseup', () => isDragging = false);
+renderer.domElement.addEventListener('click', () => {
+  if (hovered) window.location.href = hovered.userData.url;
+});
+renderer.domElement.addEventListener('wheel', e => {
+  camera.position.z = Math.max(5, Math.min(25, camera.position.z + e.deltaY * 0.01));
+});
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+function animate() {
+  requestAnimationFrame(animate);
+  if (!isDragging) {
+    rotVel.x *= 0.95; rotVel.y *= 0.95;
+    rotVel.x = Math.abs(rotVel.x) < 0.001 ? 0.001 : rotVel.x;
+    rotVel.y = Math.abs(rotVel.y) < 0.001 ? 0.0015 : rotVel.y;
+  }
+  group.rotation.x += rotVel.x;
+  group.rotation.y += rotVel.y;
+
+  const t = Date.now() * 0.001;
+  nodeMeshes.forEach((m, i) => {
+    const pulse = 1 + Math.sin(t * 2 + i) * 0.08;
+    m.scale.setScalar(pulse);
+    m.material.emissiveIntensity = hovered === m ? 0.8 : 0.4 + Math.sin(t * 1.5 + i) * 0.1;
+  });
+
+  const pos = particles.geometry.attributes.position.array;
+  for (let i = 0; i < particleCount; i++) {
+    pos[i*3]   += pVel[i].x;
+    pos[i*3+1] += pVel[i].y;
+    pos[i*3+2] += pVel[i].z;
+    if (Math.abs(pos[i*3]) > 10) pVel[i].x *= -1;
+    if (Math.abs(pos[i*3+1]) > 10) pVel[i].y *= -1;
+    if (Math.abs(pos[i*3+2]) > 10) pVel[i].z *= -1;
+  }
+  particles.geometry.attributes.position.needsUpdate = true;
+
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+</body>
+</html>
