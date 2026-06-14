@@ -4,6 +4,38 @@
 
 **科技与工程**（面语：*科学と工学*，英译：*Technology & Engineering*）是《面史纪元百科全书》第四卷，记录了面条文明史上12项最具影响力的科学技术突破。
 
+![面条文明科技树](../assets/images/tech-tree.svg)
+
+## 科技树
+
+```mermaid
+graph TD
+    A[1843年大发现] --> B[面工革命]
+    B --> C[面条引擎]
+    B --> D[汤料锅炉]
+    B --> E[3分钟定律]
+    C --> F[汤料燃料电池]
+    D --> F
+    E --> G[速食突袭战术]
+    B --> H[面饼复合材料]
+    H --> I[面饼装甲]
+    H --> J[面饼太阳能板]
+    H --> K[油炸纳米涂层]
+    E --> L[面条量子纠缠]
+    L --> M[面食互联网]
+    L --> N[骨汤人工智能]
+    L --> O[速食传送门]
+    F --> P[高汤浓缩技术]
+    P --> Q[N52级方便面]
+    B --> R[调味包微封装]
+    R --> S[调味基因编辑]
+    style A fill:#FF8F00,stroke:#E65100,color:#fff
+    style L fill:#1565C0,stroke:#0D47A1,color:#fff
+    style M fill:#2E7D32,stroke:#1B5E20,color:#fff
+```
+
+---
+
 | 条目 | 简述 |
 |------|------|
 | [汤料燃料电池](soup-fuel-cell.md) | 利用浓缩高汤发电的革命性能源技术 |

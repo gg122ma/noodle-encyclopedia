@@ -1,21 +1,25 @@
 site_name: 面史纪元百科全书
 site_description: 平行宇宙Earth-面的权威百科全书——从1843年面工革命到2026年面食互联网时代
 site_author: 面史纪元百科全书编纂委员会
-site_url: https://noodle-epoch.fandom.wiki
+site_url: https://gg122ma.github.io/noodle-encyclopedia/
+repo_url: https://github.com/gg122ma/noodle-encyclopedia
+repo_name: gg122ma/noodle-encyclopedia
 
 theme:
   name: material
   language: zh
+  logo: assets/images/logo.svg
+  favicon: assets/images/favicon.svg
   palette:
     - scheme: default
-      primary: blue grey
-      accent: amber
+      primary: amber
+      accent: deep orange
       toggle:
         icon: material/brightness-7
         name: 切换至暗色模式
     - scheme: slate
-      primary: blue grey
-      accent: amber
+      primary: amber
+      accent: deep orange
       toggle:
         icon: material/brightness-4
         name: 切换至亮色模式
@@ -27,11 +31,17 @@ theme:
     - navigation.expand
     - navigation.top
     - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.indexes
+    - navigation.footer
     - search.suggest
     - search.highlight
+    - search.share
     - content.tabs.link
     - content.code.copy
+    - content.action.edit
     - toc.follow
+    - toc.integrate
   icon:
     repo: fontawesome/brands/github
 
@@ -63,7 +73,11 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.mark
   - pymdownx.smartsymbols
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.tilde
@@ -71,18 +85,22 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/noodle-epoch
+      link: https://github.com/gg122ma/noodle-encyclopedia
   alternate:
     - name: 中文
       link: /
       lang: zh
   generator: false
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
 
 extra_css:
   - assets/css/custom.css
 
 nav:
   - 首页: index.md
+  - 标签: tags.md
   - 卷一 · 编年史:
       - history/index.md
       - 1843年大发现: history/great-discovery-1843.md
